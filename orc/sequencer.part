@@ -1,0 +1,16 @@
+instr sequencer
+
+if gkBeat == 1 then
+
+SSteps sprintf "%s/steps", SPrefix
+kSteps chnget SSteps
+
+kStep metro kSteps / gkBPS
+
+if kStep == 1 then
+
+
+
+endif
+
+endin

@@ -1,0 +1,146 @@
+instr track
+
+STrackIndex strget p4
+STrack sprintf "track/%s", STrackIndex
+
+iTrack chnget "track"
+iTrack += 1
+
+if iTrack % 10 == 0 then
+
+iTrack += 1
+
+endif
+
+chnset iTrack, "track"
+
+SInstance sprintf "0.%d", iTrack
+iInstance strtod SInstance
+
+chnset iInstance, STrack
+
+p1 = int ( p1 ) + iInstance
+
+prints "Faddy's Oscilla: Created new track \"%s\" with instance number %f\n", STrack, iInstance
+
+kTick chnget "clock/tick"
+
+if kTick == 1 then
+
+kClock chnget "clock"
+
+SBarIndex sprintfk "%s/%d", STrack, kClock
+
+iBarEditor nstrnum "bar"
+iBarEditor += iInstance
+
+SScore sprintfk {{i %f 0 0 "%s"}}, iBarEditor, SBarIndex
+
+scoreline SScore, 1
+
+kTime date
+
+printf "Faddy's Oscilla: Scoring bar #%d %s\n", kTime, kClock, SScore
+
+endif
+
+endin
+
+instr bar
+
+p3 = 0
+
+SBarIndex strget p4
+iAction = p5
+
+prints "Faddy's Oscilla: %s %d\n", SBarIndex, iAction
+
+SCountIndex sprintf "%s/count", SBarIndex
+iCount chnget SCountIndex
+
+if iAction < 0 then
+
+chnclear SCountIndex
+
+prints "Faddy's Oscilla: Clearing bar\n"
+
+elseif iAction > 0 then
+
+iCount pcount
+iCount = ( iCount -6 ) / 4
+
+chnset iCount, SCountIndex
+
+prints "Faddy's Oscilla: Inserting %d note(s) to the bar\n", iCount
+
+endif
+
+iNote = 0
+
+while iNote < iCount do
+
+SInstrumentIndex sprintf "%s/instrument", SBarIndex
+SStepIndex sprintf "%s/step", SBarIndex
+SDurationIndex sprintfk "%s/duration", SBarIndex
+SParametersIndex sprintf "%s/parameters", SBarIndex
+
+if iAction < 0 then
+
+chnclear SInstrumentIndex
+chnclear SStepIndex
+chnclear SDurationIndex
+chnclear SParametersIndex
+
+prints "Faddy's Oscilla: Cleared note #%d\n", iNote + 1
+
+else
+
+if iAction > 0 then
+
+iSteps = p6
+
+iIndex = 7 + iNote * 4
+
+SInstrument strget p ( iIndex )
+iInstrument nstrnum SInstrument
+chnset iInstrument, SInstrumentIndex
+
+iStep = p ( iIndex + 1 ) % iSteps
+chnset iStep, SStepIndex
+
+iDuration = p ( iIndex + 2 )
+chnset iDuration, SDurationIndex
+
+SParameters strget p ( iIndex + 3 )
+chnset SParameters, SParametersIndex
+
+prints "Faddy's Oscilla: inserted note #%d\n", iNote + 1
+
+endif
+
+iInstrument chnget SInstrumentIndex
+iInstrument += frac ( p1 )
+
+iTempo chnget "clock/tempo"
+
+iStep chnget SStepIndex
+iStep /= iTempo
+
+iDuration chnget SDurationIndex
+iDuration /= iTempo
+
+SParameters chnget SParametersIndex
+
+SNote sprintf "i %f %f %f %s", iInstrument, iStep, iDuration, SParameters
+
+scoreline_i SNote
+
+iNote += 1
+
+prints "Faddy's Oscilla: Scored note %s\n", SNote
+
+endif
+
+od
+
+endin

@@ -1,0 +1,67 @@
+instr kick
+
+$parameters
+
+SScore sprintf {{
+
+i "sub" 0 %f "%s" "%s" %f
+i "snatch" 0 %f "%s" "%s" %f
+i "gogobell" 0 %f "%s" "%s" %f
+
+}}, \
+p3, STrack, SNote, 5, \
+p3, STrack, SNote, 1, \
+p3, STrack, SNote, 35
+
+scoreline_i SScore
+
+endin
+
+giSineWaveform ftgen 0, 0, 16384, 10, 1
+
+instr sub
+
+$parameters
+
+kAmplitude linsegr 0, giBeat / 128, iAmplitude, giBeat / 8, iAmplitude / 16, giBeat/128, 0
+kFrequency linseg iFrequency * 2^5, giBeat / 64, iFrequency
+
+;aNote poscil kAmplitude, kFrequency;, 1, kAmplitude * 2, kAmplitude * 4, giSineWaveform
+
+aNote foscil kAmplitude, kFrequency, 1, 1/4, 2, giSineWaveform
+
+$mix
+
+endin
+
+giStrikeWaveform ftgen 0, 0, 256, 1, "marmstk1.wav", 0, 0, 0
+
+instr gogobell
+
+$parameters
+
+aNote gogobel 1, iFrequency, .5, .5, giStrikeWaveform, 6.0, 0.3, giSineWaveform
+
+aNote tone aNote, iFrequency
+
+aAmplitude linseg 0, giBeat / 256, iAmplitude, giBeat, iAmplitude / 8, giBeat, 0
+
+aNote *= aAmplitude
+
+$mix
+
+endin
+
+instr snatch
+
+$parameters
+
+aAmplitude linseg 0, giBeat / 256, iAmplitude, giBeat / 64, 0
+
+aNote noise aAmplitude, 0
+
+aNote tone aNote, iFrequency * 2^3
+
+$mix
+
+endin

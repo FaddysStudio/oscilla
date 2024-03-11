@@ -1,0 +1,23 @@
+{
+  "name": "@faddys/oscilla",
+  "version": "1.0.0",
+  "description": "Faddy's Oscilla",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FaddysStudio/oscilla.git"
+  },
+  "author": "Faddy Violette Michel <faddy.michel@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/FaddysStudio/oscilla/issues"
+  },
+  "homepage": "https://github.com/FaddysStudio/oscilla#readme",
+  "dependencies": {
+    "@faddys/scenarist": "^1.0.0"
+  }
+}

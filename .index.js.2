@@ -1,0 +1,82 @@
+#!/usr/bin/env node
+
+import Scenarist from '@faddys/scenarist';
+import { spawn } from 'node:child_process';
+import { parse } from 'node:path';
+
+const $$ = Symbol .for;
+const { dir } = parse ( new URL ( import .meta .url ) .pathname );
+const _port = '1313';
+
+export default await Scenarist ( {
+
+$_producer ( $ ) {
+
+$ ( ... process .argv .slice ( 2 ) );
+
+},
+
+$_director ( $, ... args ) {
+
+console .log ( "Faddy's Oscilla: Invalid command", ... args );
+
+},
+
+$on ( $, port = _port ) {
+
+spawn ( 'csound', [
+
+`${ dir }/receiver.csd`,
+`--omacro:port=${ port }`
+
+], {
+
+detached: true,
+stdio: 'ignore'
+
+} ) .unref ();
+
+},
+
+$off ( $, port = _port ) {
+
+this .send ( { instrument: 'exit' } );
+
+},
+
+$tempo ( $, parameters ) {
+
+this .send ( {
+
+instrument: 'tempo',
+parameters
+
+} );
+
+},
+
+send ( score ) {
+Object .assign ( {
+
+instrument: 'nothing',
+instance: '.00',
+delay: '0',
+duration: '0'
+
+}, score );
+
+console .log ( score );
+
+const csound = spawn ( 'csound', [
+
+`${ dir }/sender.csd`,
+... Object .keys ( score ) .map ( parameter => `--omacro:${ parameter }=${ score [ parameter ] }` )
+
+] );
+
+csound .stdout .pipe ( process .stdout );
+csound .stderr .pipe ( process .stderr );
+
+}
+
+} );

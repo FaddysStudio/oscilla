@@ -1,0 +1,88 @@
+instr clock
+
+subinstrinit "clock_tempo"
+subinstrinit "clock_measure", 0, 0
+subinstrinit "clock_frequency"
+subinstrinit "clock_cycle"
+
+kFrequency chnget "clock/frequency"
+
+kTick metro kFrequency
+
+chnset kTick, "clock/tick"
+
+if kTick == 1 then
+
+kClock chnget "clock"
+kCycle chnget "clock/cycle"
+
+if kClock >= kCycle then
+
+kClock = 0
+
+endif
+
+kClock += 1
+
+chnset kClock, "clock"
+
+schedulek "beep", 0, 1/16
+
+endif
+
+endin
+
+schedule "clock", 0, -1
+
+instr clock_tempo
+
+if p4 <= 0 then
+
+p4 = 60
+
+endif
+
+chnset p4, "clock/tempo"
+
+endin
+
+instr clock_measure
+
+if p4 <= 0 then
+
+p4 = 4
+
+endif
+
+chnset p4, "clock/measure"
+
+endin
+
+instr clock_frequency
+
+iTempo chnget "clock/tempo"
+iMeasure chnget "clock/measure"
+
+chnset 60 / iMeasure / iTempo, "clock/frequency"
+
+endin
+
+instr clock_cycle
+
+if p4 <= 0 then
+
+p4 = 1
+
+endif
+
+chnset p4, "clock/cycle"
+
+endin
+
+instr beep
+
+aBeep poscil .3, 440
+
+outs aBeep, aBeep
+
+endin

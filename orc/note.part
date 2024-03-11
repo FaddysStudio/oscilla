@@ -1,0 +1,12 @@
+instr note
+
+iCycle = abs ( p3 )
+SNote strget p4
+
+if iCycle > 0 && gkTimeline % iCycle == 0 then
+
+scoreline SNote, 1
+
+endif
+
+endin
