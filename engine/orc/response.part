@@ -1,0 +1,15 @@
+opcode oResponse, 0, S
+
+SMessage xin
+
+SReference strget p ( 4 )
+
+SCommand sprintf {{
+
+echo "%s %s"
+
+}}, SReference, SMessage
+
+i_ system_i 1, SCommand
+
+endop

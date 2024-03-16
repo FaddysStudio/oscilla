@@ -1,0 +1,42 @@
+instr loop_sequencer
+
+p3 = 0
+
+SBarIndex strget p ( 5 )
+
+iIndex = 0
+
+iCount pcount
+iIndex = 6
+iNote = 0
+
+while iIndex < iCount do
+
+SNoteIndex sprintf "%s/%d", SBarIndex, iNote
+iNote += 1
+
+SInstrument strget p ( iIndex )
+iInstrument nstrnum SInstrument
+SInstrumentIndex sprintf "%s/instrument", SNoteIndex
+chnset iInstrument, SInstrumentIndex
+
+iDelay = p ( iIndex + 1 )
+SDelayIndex sprintf "%s/delay", SNoteIndex
+chnset iDelay, SDelayIndex
+
+iDuration = p ( iIndex + 2 )
+SDurationIndex sprintfk "%s/duration", SNoteIndex
+chnset iDuration, SDurationIndex
+
+SParameters strget p ( iIndex + 3 )
+SParametersIndex sprintf "%s/parameters", SNoteIndex
+chnset SParameters, SParametersIndex
+
+iIndex += 4
+
+od
+
+SCountIndex sprintf "%s/count", SBarIndex
+chnset iNote, SCountIndex
+
+endin

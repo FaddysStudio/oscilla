@@ -1,7 +1,7 @@
 instr clock
 
+subinstrinit "clock_measure"
 subinstrinit "clock_tempo"
-subinstrinit "clock_measure", 0, 0
 subinstrinit "clock_frequency"
 subinstrinit "clock_cycle"
 
@@ -36,13 +36,19 @@ schedule "clock", 0, -1
 
 instr clock_tempo
 
-if p4 <= 0 then
+if p5 <= 0 then
 
-p4 = 60
+p5 = 60
 
 endif
 
-chnset p4, "clock/tempo"
+chnset p5, "clock/tempo"
+
+subinstrinit "clock_frequency"
+
+SMessage sprintf "Tempo changed to %.2f", p5
+
+oResponse SMessage
 
 endin
 
@@ -63,7 +69,7 @@ instr clock_frequency
 iTempo chnget "clock/tempo"
 iMeasure chnget "clock/measure"
 
-chnset 60 / iMeasure / iTempo, "clock/frequency"
+chnset iTempo / 60 / iMeasure, "clock/frequency"
 
 endin
 

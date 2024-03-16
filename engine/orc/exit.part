@@ -1,0 +1,7 @@
+instr exit
+
+oResponse	 "Stopping the engine"
+
+exitnow
+
+endin

@@ -1,27 +1,29 @@
-instr track
+instr loop
 
-STrackIndex strget p4
-STrack sprintf "track/%s", STrackIndex
+SLoopIndex strget p ( 5 )
+SLoopIndex strcat "loop/", SLoopIndex
 
-iTrack chnget "track"
-iTrack += 1
+iLoopIndex chnget "loop"
+iLoopIndex += 1
 
-if iTrack % 10 == 0 then
+if iLoopIndex % 10 == 0 then
 
-iTrack += 1
+iLoopIndex += 1
 
 endif
 
-chnset iTrack, "track"
+chnset iLoopIndex, "loop"
 
-SInstance sprintf "0.%d", iTrack
-iInstance strtod SInstance
+SLoopInstance sprintf "0.%d", iLoopIndex
+iLoopInstance strtod SLoopInstance
 
-chnset iInstance, STrack
+chnset iLoopInstance, SLoopIndex
 
-p1 = int ( p1 ) + iInstance
+p1 = int ( p1 ) + iLoopInstance
 
-prints "Faddy's Oscilla: Created new track \"%s\" with instance number %f\n", STrack, iInstance
+SMessage sprintf "Created new loop '%s' with instance number .%d", SLoopIndex, iLoopIndex
+
+oResponse SMessage
 
 kTick chnget "clock/tick"
 
@@ -29,31 +31,25 @@ if kTick == 1 then
 
 kClock chnget "clock"
 
-SBarIndex sprintfk "%s/%d", STrack, kClock
+SBarIndex sprintfk "%s/%d", SLoopIndex, kClock
 
-iBarEditor nstrnum "bar"
-iBarEditor += iInstance
+iLoopSequencer nstrnum "loop_sequencer"
+iLoopSequencer += iLoopInstance
 
-SScore sprintfk {{i %f 0 0 "%s"}}, iBarEditor, SBarIndex
+SScore sprintfk {{ i %f 0 0 "%s" }}, iLoopSequencer, SBarIndex
 
 scoreline SScore, 1
-
-kTime date
-
-printf "Faddy's Oscilla: Scoring bar #%d %s\n", kTime, kClock, SScore
 
 endif
 
 endin
 
-instr bar
+instr loop_sequencer
 
 p3 = 0
 
-SBarIndex strget p4
-iAction = p5
-
-prints "Faddy's Oscilla: %s %d\n", SBarIndex, iAction
+SBarIndex strget p ( 5 )
+iAction = p ( 6 )
 
 SCountIndex sprintf "%s/count", SBarIndex
 iCount chnget SCountIndex
@@ -62,16 +58,12 @@ if iAction < 0 then
 
 chnclear SCountIndex
 
-prints "Faddy's Oscilla: Clearing bar\n"
-
 elseif iAction > 0 then
 
 iCount pcount
-iCount = ( iCount -6 ) / 4
+iCount = ceil ( ( iCount - 6 ) / 4 )
 
 chnset iCount, SCountIndex
-
-prints "Faddy's Oscilla: Inserting %d note(s) to the bar\n", iCount
 
 endif
 

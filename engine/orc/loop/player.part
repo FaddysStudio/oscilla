@@ -1,0 +1,44 @@
+instr loop_player
+
+SLoopIndex strget p ( 5 )
+SLoopIndex strcat "loop/", SLoopIndex
+
+iLoopIndex chnget "loop"
+iLoopIndex += 1
+
+if iLoopIndex % 10 == 0 then
+
+iLoopIndex += 1
+
+endif
+
+chnset iLoopIndex, "loop"
+
+SLoopInstance sprintf "0.%d", iLoopIndex
+iLoopInstance strtod SLoopInstance
+
+chnset iLoopInstance, SLoopIndex
+
+p1 = int ( p1 ) + iLoopInstance
+
+SMessage sprintf "Playing new loop '%s' with instance number .%d", SLoopIndex, iLoopIndex
+
+oResponse SMessage
+
+kTick chnget "clock/tick"
+
+if kTick == 1 then
+
+kClock chnget "clock"
+
+SBarIndex sprintfk "%s/%d", SLoopIndex, kClock
+iLoopSequencer nstrnum "loop_sequencer"
+iLoopSequencer += iLoopInstance
+
+SScore sprintfk {{ i %f 0 0 "%s" }}, iLoopSequencer, SBarIndex
+
+scoreline SScore, 1
+
+endif
+
+endin

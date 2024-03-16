@@ -1,0 +1,37 @@
+instr loop_clear
+
+p3 = 0
+
+SBarIndex strget p ( 5 )
+
+SCountIndex sprintf "%s/count", SBarIndex
+iCount chnget SCountIndex
+
+chnclear SCountIndex
+
+iNote = 0
+
+while iNote < iCount do
+
+SInstrumentIndex sprintf "%s/instrument", SBarIndex
+iInstrument chnget iInstrumentIndex
+chnclear iInstrumentIndex
+
+SStepIndex sprintf "%s/step", SBarIndex
+chnclear SStepIndex
+
+SDurationIndex sprintfk "%s/duration", SBarIndex
+chnclear SDurationIndex
+
+SParametersIndex sprintf "%s/parameters", SBarIndex
+chnclear SParametersIndex
+
+SNote sprintf "i -%f 0 0", iInstrument + frac ( p1 )
+
+scoreline_i SNote
+
+iNote += 1
+
+od
+
+endin

@@ -1,0 +1,40 @@
+instr loop_bar
+
+p3 = 0
+
+SBarIndex strget p ( 5 )
+
+SCountIndex sprintf "%s/count", SBarIndex
+iCount chnget SCountIndex
+
+iNote = 0
+
+while iNote < iCount do
+
+SInstrumentIndex sprintf "%s/instrument", SBarIndex
+SStepIndex sprintf "%s/step", SBarIndex
+SDurationIndex sprintfk "%s/duration", SBarIndex
+SParametersIndex sprintf "%s/parameters", SBarIndex
+
+iInstrument chnget SInstrumentIndex
+iInstrument += frac ( p1 )
+
+iStep chnget SStepIndex
+iStep /= iTempo
+
+iDuration chnget SDurationIndex
+iDuration /= iTempo
+
+SParameters chnget SParametersIndex
+
+SNote sprintf "i %f %f %f %s", iInstrument, iStep, iDuration, SParameters
+
+scoreline_i SNote
+
+iNote += 1
+
+prints "Faddy's Oscilla: Scored note %s\n", SNote
+
+od
+
+endin
